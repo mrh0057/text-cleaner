@@ -5,7 +5,9 @@ need to call initialize before using any other functions."}
   (:use 
     opennlp.nlp
     opennlp.tools.filters
-    text-cleaner.stemmer))
+    text-cleaner.stemmer
+    text-cleaner.stop-words
+    [clojure.contrib.string :only (lower-case)]))
 
 (def get-sentences)
 
@@ -14,7 +16,7 @@ need to call initialize before using any other functions."}
 (def pos-tag)
 
 (defn filter-tags [tag-list]
-  tag-list)
+  (remove-stop-words (filter #(re-matches #"[A-Za-z]+" %) tag-list)))
 
 (defn initialize [sentence-detector tokenizer pos-tagger]
   "Used to initialize the nlp settings.  This must be called before all other methods.
@@ -32,5 +34,5 @@ pos-tagger - The path to the pos-tagger."
 document - The document as a string of text.  Tokenizes the words and stems them.
 
 return The list of words."
-  (filter-tags (stems (tokenize document))))
+  (filter-tags (stems (tokenize (lower-case document)))))
 
